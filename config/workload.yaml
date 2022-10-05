@@ -21,4 +21,4 @@ spec:
     git:
       ref:
         branch: main
-      url: https://github.com/d-lorenc/tapathon-accelerator.git
+      url: https://github.com/santiagovm/tap-hackathon-fleet-management.git
