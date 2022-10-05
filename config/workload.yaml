@@ -1,9 +1,9 @@
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
-  name: fleet-management-app
+  name: wehaul-fleet-management-app
   labels:
-    app.kubernetes.io/part-of: fleet-management-app
+    app.kubernetes.io/part-of: wehaul-fleet-management-app
     apps.tanzu.vmware.com/workload-type: web
     # todo: play with this
 #    apps.tanzu.vmware.com/has-tests: true
