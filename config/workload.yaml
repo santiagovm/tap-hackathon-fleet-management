@@ -22,3 +22,9 @@ spec:
       ref:
         branch: main
       url: https://github.com/santiagovm/tap-hackathon-fleet-management.git
+  serviceClaims:
+    - name: db
+      ref:
+        apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+        kind: ResourceClaim
+        name: postgres-team-a
