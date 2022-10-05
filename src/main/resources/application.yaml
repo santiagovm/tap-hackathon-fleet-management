@@ -13,4 +13,5 @@ spring:
   flyway.enabled: true
 springdoc.api-docs.path: /api-docs
 
-org.springframework.cloud.bindings.boot.enable: true
+# todo: do we need this?
+#org.springframework.cloud.bindings.boot.enable: true
