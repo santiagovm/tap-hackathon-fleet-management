@@ -1,10 +1,10 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: customer-profile
+  name: wehaul-fleet-management-app
   annotations:
-    "backstage.io/kubernetes-label-selector": "app.kubernetes.io/part-of=customer-profile"
+    "backstage.io/kubernetes-label-selector": "app.kubernetes.io/part-of=wehaul-fleet-management-app"
 spec:
   type: service
   lifecycle: experimental
-  owner: default-team
+  owner: team-a
