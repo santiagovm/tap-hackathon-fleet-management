@@ -1,4 +1,16 @@
 spring:
+  cloud:
+    function:
+      definition: availableReceived
+    stream:
+      default-binder: rabbit
+      default:
+        group: initiator
+      bindings:
+        availableReceived-in-0:
+          destination: truck-available-topic
+        available:
+          destination: truck-available-topic
   application:
     name: fleet-management-app
   jpa:
