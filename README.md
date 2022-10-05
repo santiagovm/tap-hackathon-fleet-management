@@ -99,6 +99,7 @@ tanzu apps workload apply \
   --tail
 ````
 
+todo: remove this line
 
 
 Note: change the namespace to where you would like to deploy this workload. Also define the (private) image registry you
