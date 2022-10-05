@@ -28,3 +28,8 @@ spec:
         apiVersion: services.apps.tanzu.vmware.com/v1alpha1
         kind: ResourceClaim
         name: postgres-team-a
+    - name: queue
+      ref:
+        apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+        kind: ResourceClaim
+        name: rmq-shared-team-a
