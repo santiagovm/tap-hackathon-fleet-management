@@ -4,9 +4,13 @@ metadata:
   name: wehaul-fleet-management-app
   annotations:
     "backstage.io/kubernetes-label-selector": "app.kubernetes.io/part-of=wehaul-fleet-management-app"
+  links:
+    - url: https://dashboard.example.com
+      title: My Dashboard
+      icon: dashboard
 spec:
   type: service
   lifecycle: experimental
   owner: team-a
   dependsOn:
-    - resource:team-b/rental-manager
+    - component:team-b/rental-manager
