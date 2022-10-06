@@ -12,5 +12,9 @@ spec:
   type: service
   lifecycle: experimental
   owner: team-a
+  providesApis:
+    - wehaul-fleet-management-api
+  consumesApis:
+    - rental-manager-dotnet-api
   dependsOn:
     - service:team-b/rental-manager
