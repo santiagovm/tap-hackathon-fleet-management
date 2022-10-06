@@ -23,10 +23,10 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Domain
 metadata:
-  name: trucks
-  description: Everything about artists
+  name: wehaul-domain
+  description: Everything about trucks
 spec:
-  owner: wehaul-domain
+  owner: default-team
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
