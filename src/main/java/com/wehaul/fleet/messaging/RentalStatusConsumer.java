@@ -33,7 +33,7 @@ public class RentalStatusConsumer {
             }
 
             if (reservationChange.getEventType().equals("RESERVATION_FULFILLED")) {
-                fleetService.releaseTruck(reservationChange.getTruckId(), "truck rental returned");
+                fleetService.releaseTruck(reservationChange.getTruckId(), "truck rental returned", reservationChange.getCurrentMiles());
                 return;
             }
 
