@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -23,6 +24,14 @@ public class TruckRepository {
                 .stream()
                 .map(this::fromEntity)
                 .toList();
+    }
+
+    public Optional<Truck> findById(int truckId) {
+        return jpaRepo.findById(truckId).map(this::fromEntity);
+    }
+
+    public void update(Truck truck) {
+        jpaRepo.save(toEntity(truck));
     }
 
     private Truck fromEntity(TruckEntity entity) {

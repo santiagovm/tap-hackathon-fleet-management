@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +17,10 @@ public class FleetService {
     private final DomainEventPublisher domainEventPublisher;
 
     public Truck addTruck(NewTruck newTruck) {
+
+        if (newTruck.miles() <  0) {
+            throw new RuntimeException("miles must 0 or greater");
+        }
 
         Truck truck = Truck.builder()
                 .miles(newTruck.miles())
@@ -29,18 +34,44 @@ public class FleetService {
         log.info(" >>> truck saved to database: [{}]", savedTruck);
 
         // publish event
-        TruckAvailabilityChanged truckAvailabilityChanged = TruckAvailabilityChanged.builder()
+        TruckAvailabilityChanged availabilityChanged = TruckAvailabilityChanged.builder()
                 .truckId(savedTruck.getTruckId())
                 .available(true)
                 .build();
 
-        domainEventPublisher.publish(truckAvailabilityChanged);
-        log.info(" >>> truck available event published [{}]", truckAvailabilityChanged);
+        domainEventPublisher.publish(availabilityChanged);
+        log.info(" >>> truck availability event published [{}]", availabilityChanged);
 
         return savedTruck;
     }
 
     public List<Truck> getTrucks() {
         return truckRepo.findAll();
+    }
+
+    public void sendTruckForInspection(int truckId) {
+
+        // throw if truck not available
+        Optional<Truck> truckOptional = truckRepo.findById(truckId);
+        Truck truck = truckOptional.orElseThrow(() -> new RuntimeException("truck not found"));
+
+        if (!truck.getAvailable()) {
+            throw new RuntimeException("truck is not available: [" + truck.getAvailabilityReason() + "]");
+        }
+
+        // save to database
+        truck.setAvailable(false);
+        truck.setAvailabilityReason("sent for inspection");
+        truckRepo.update(truck);
+        log.info(" >>> truck saved to database: [{}]", truck);
+
+        // publish event
+        TruckAvailabilityChanged availabilityChanged = TruckAvailabilityChanged.builder()
+                .truckId(truck.getTruckId())
+                .available(false)
+                .build();
+
+        domainEventPublisher.publish(availabilityChanged);
+        log.info(" >>> truck availability event published [{}]", availabilityChanged);
     }
 }

@@ -12,10 +12,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +37,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/fleet")
 @RequiredArgsConstructor
+@Slf4j
 public class FleetController {
 
     private final FleetService fleetService;
@@ -78,6 +81,29 @@ public class FleetController {
                 .stream()
                 .map(truck -> toResponse(truck))
                 .toList();
+    }
+
+    @Operation(summary = "Send truck to inspection.", method = "PUT", tags = "truck")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Truck successfully sent to inspection."
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Truck cannot be sent to inspection."
+            )
+    })
+    @PutMapping("/trucks/send-for-inspection")
+    ResponseEntity<?> sendTruckForInspection(@Valid @RequestBody SendTruckForInspectionRequest request) {
+        try {
+            fleetService.sendTruckForInspection(request.truckId());
+            return ResponseEntity.ok().build();
+        }
+        catch (RuntimeException exception) {
+            log.error(" >>> send truck for inspection failed", exception);
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
     }
 
     private TruckResponse toResponse(Truck truck) {
