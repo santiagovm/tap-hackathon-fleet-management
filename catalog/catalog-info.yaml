@@ -12,9 +12,62 @@ spec:
   type: service
   lifecycle: experimental
   owner: team-a
+  system: wehaul-system
   providesApis:
     - wehaul-fleet-management-api
   consumesApis:
-    - rental-manager-dotnet-api
+    - wehaul-rental-management-api
   dependsOn:
-    - service:team-b/rental-manager
+    - component:team-b/rental-manager
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: trucks
+  description: Everything about artists
+spec:
+  owner: wehaul-domain
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: fleet-system
+  description: WeHaul Trucks and Rentals
+spec:
+  owner: default-team
+  domain: wehaul-domain
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: rental-system
+  description: WeHaul Trucks and Rentals
+spec:
+  owner: default-team
+  domain: wehaul-domain
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: wehaul-fleet-management-api
+  description:  The awesome WeHaul API
+spec:
+  type: openapi
+  lifecycle: production
+  owner: team-a
+  system: fleet-system
+  definition:
+    $text: https://github.com/santiagovm/tap-hackathon-fleet-management/blob/main/catalog/api-docs-fleet.json
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: wehaul-rental-management-api
+  description:  The awesome WeHaul API
+spec:
+  type: openapi
+  lifecycle: production
+  owner: team-b
+  system: rental-system
+  definition:
+    $text: https://github.com/santiagovm/tap-hackathon-fleet-management/blob/main/catalog/api-docs-rentals.json
