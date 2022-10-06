@@ -33,14 +33,7 @@ public class FleetService {
         Truck savedTruck = truckRepo.create(truck);
         log.info(" >>> truck saved to database: [{}]", savedTruck);
 
-        // publish event
-        TruckAvailabilityChanged availabilityChanged = TruckAvailabilityChanged.builder()
-                .truckId(savedTruck.getTruckId())
-                .available(true)
-                .build();
-
-        domainEventPublisher.publish(availabilityChanged);
-        log.info(" >>> truck availability event published [{}]", availabilityChanged);
+        publishAvailability(savedTruck.getTruckId(), true);
 
         return savedTruck;
     }
@@ -65,13 +58,36 @@ public class FleetService {
         truckRepo.update(truck);
         log.info(" >>> truck saved to database: [{}]", truck);
 
-        // publish event
+        publishAvailability(truckId, false);
+    }
+
+    public void returnTruckFromInspection(int truckId) {
+        Optional<Truck> truckOptional = truckRepo.findById(truckId);
+        Truck truck = truckOptional.orElseThrow(() -> new RuntimeException("truck not found"));
+
+        if (truck.getAvailable()) {
+            log.info("truck is already available: [{}]", truck);
+            return;
+        }
+
+        truck.setAvailable(true);
+        truck.setAvailabilityReason("returned from inspection");
+
+        truckRepo.update(truck);
+        log.info(" >>> truck saved to database: [{}]", truck);
+
+        publishAvailability(truckId, true);
+    }
+
+    private void publishAvailability(int truckId, boolean available) {
+
         TruckAvailabilityChanged availabilityChanged = TruckAvailabilityChanged.builder()
-                .truckId(truck.getTruckId())
-                .available(false)
+                .truckId(truckId)
+                .available(available)
                 .build();
 
         domainEventPublisher.publish(availabilityChanged);
         log.info(" >>> truck availability event published [{}]", availabilityChanged);
     }
+
 }

@@ -79,7 +79,7 @@ public class FleetController {
     List<TruckResponse> getTrucks() {
         return fleetService.getTrucks()
                 .stream()
-                .map(truck -> toResponse(truck))
+                .map(this::toResponse)
                 .toList();
     }
 
@@ -103,6 +103,30 @@ public class FleetController {
         catch (RuntimeException exception) {
             log.error(" >>> send truck for inspection failed", exception);
             return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+
+
+    @Operation(summary = "Return truck from inspection.", method = "PUT", tags = "truck")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Truck successfully returned from inspection."
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Truck not found."
+            )
+    })
+    @PutMapping("/trucks/return-from-inspection")
+    ResponseEntity<?> returnTruckFromInspection(@Valid @RequestBody ReturnTruckFromInspectionRequest request) {
+        try {
+            fleetService.returnTruckFromInspection(request.truckId());
+            return ResponseEntity.ok().build();
+        }
+        catch (RuntimeException exception) {
+            log.error(" >>> return truck failed", exception);
+            return ResponseEntity.notFound().build();
         }
     }
 
