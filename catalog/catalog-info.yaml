@@ -13,4 +13,4 @@ spec:
   lifecycle: experimental
   owner: team-a
   dependsOn:
-    - component:team-b/rental-manager
+    - service:team-b/rental-manager
