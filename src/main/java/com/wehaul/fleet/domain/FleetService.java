@@ -79,6 +79,48 @@ public class FleetService {
         publishAvailability(truckId, true);
     }
 
+    public void claimTruck(int truckId, String claimDetails) {
+
+        // todo: refactor this, duplicate code
+
+        // throw if truck not available
+        Optional<Truck> truckOptional = truckRepo.findById(truckId);
+        Truck truck = truckOptional.orElseThrow(() -> new RuntimeException("truck not found"));
+
+        if (!truck.getAvailable()) {
+            throw new RuntimeException("truck is not available: [" + truck.getAvailabilityReason() + "]");
+        }
+
+        // save to database
+        truck.setAvailable(false);
+        truck.setAvailabilityReason(claimDetails);
+        truckRepo.update(truck);
+        log.info(" >>> truck saved to database: [{}]", truck);
+
+        publishAvailability(truckId, false);
+    }
+
+    public void releaseTruck(int truckId, String releaseDetails) {
+
+        // todo: refactor this, duplicate code
+
+        Optional<Truck> truckOptional = truckRepo.findById(truckId);
+        Truck truck = truckOptional.orElseThrow(() -> new RuntimeException("truck not found"));
+
+        if (truck.getAvailable()) {
+            log.info("truck is already available: [{}]", truck);
+            return;
+        }
+
+        truck.setAvailable(true);
+        truck.setAvailabilityReason(releaseDetails);
+
+        truckRepo.update(truck);
+        log.info(" >>> truck saved to database: [{}]", truck);
+
+        publishAvailability(truckId, true);
+    }
+
     private void publishAvailability(int truckId, boolean available) {
 
         TruckAvailabilityChanged availabilityChanged = TruckAvailabilityChanged.builder()
@@ -89,5 +131,6 @@ public class FleetService {
         domainEventPublisher.publish(availabilityChanged);
         log.info(" >>> truck availability event published [{}]", availabilityChanged);
     }
+
 
 }
