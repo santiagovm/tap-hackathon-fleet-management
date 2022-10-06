@@ -20,3 +20,5 @@ spring:
     hibernate.ddl-auto: none
   flyway.enabled: true
 springdoc.api-docs.path: /api-docs
+
+management.endpoints.web.exposure.include: httptrace
