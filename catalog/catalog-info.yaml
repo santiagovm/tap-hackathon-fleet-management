@@ -21,14 +21,6 @@ spec:
     - component:team-b/rental-manager
 ---
 apiVersion: backstage.io/v1alpha1
-kind: Domain
-metadata:
-  name: wehaul-domain
-  description: Everything about trucks
-spec:
-  owner: default-team
----
-apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: fleet-system
