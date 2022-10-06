@@ -2,10 +2,12 @@ package com.wehaul.fleet.domain;
 
 import com.wehaul.fleet.data.TruckRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FleetService {
 
     private final TruckRepository truckRepo;
@@ -22,6 +24,7 @@ public class FleetService {
 
         // save to database
         Truck savedTruck = truckRepo.create(truck);
+        log.info(" >>> truck saved to database: [{}]", savedTruck);
 
         // publish event
         TruckAvailabilityChanged truckAvailabilityChanged = TruckAvailabilityChanged.builder()
@@ -30,6 +33,7 @@ public class FleetService {
                 .build();
 
         domainEventPublisher.publish(truckAvailabilityChanged);
+        log.info(" >>> truck available event published [{}]", truckAvailabilityChanged);
 
         return savedTruck;
     }
