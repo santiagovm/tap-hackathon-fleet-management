@@ -9,4 +9,4 @@ spec:
   lifecycle: experimental
   owner: team-a
   dependsOn:
-    - resource:default-team/rental-manager
+    - resource:team-b/rental-manager
