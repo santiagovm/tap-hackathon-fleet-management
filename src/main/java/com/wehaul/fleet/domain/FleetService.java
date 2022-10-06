@@ -85,8 +85,6 @@ public class FleetService {
 
     public void releaseTruck(int truckId, String releaseDetails, int currentMiles) {
 
-        // todo: refactor this, duplicate code
-
         Optional<Truck> truckOptional = truckRepo.findById(truckId);
         Truck truck = truckOptional.orElseThrow(() -> new RuntimeException("truck not found"));
 
