@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -61,6 +63,31 @@ public class FleetController {
         Truck createdTruck = fleetService.addTruck(newTruck);
         URI locationUri = toLocationUri(createdTruck.getTruckId());
         return ResponseEntity.created(locationUri).build();
+    }
+
+    @Operation(summary = "Get all trucks in the fleet.", method = "GET", tags = "truck")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "List of trucks."
+            )
+    })
+    @GetMapping("/trucks")
+    List<TruckResponse> getTrucks() {
+        return fleetService.getTrucks()
+                .stream()
+                .map(truck -> toResponse(truck))
+                .toList();
+    }
+
+    private TruckResponse toResponse(Truck truck) {
+        return new TruckResponse(
+                truck.getTruckId(),
+                truck.getMiles(),
+                truck.getLastInspectionMiles(),
+                truck.getAvailable(),
+                truck.getAvailabilityReason()
+        );
     }
 
     private NewTruck fromRequest(TruckCreateRequest request) {
