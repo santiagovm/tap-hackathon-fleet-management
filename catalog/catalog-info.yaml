@@ -8,3 +8,5 @@ spec:
   type: service
   lifecycle: experimental
   owner: team-a
+  dependsOn:
+    - resource:default-team/rental-manager
